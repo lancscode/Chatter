@@ -1,7 +1,7 @@
 import java.io.Serializable;
-import java.util.UUID;
+import java.util.HashSet;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.UUID;
 
 public class ChatMessage implements Serializable {
     private static final long serialVersionUID = 1L;
@@ -9,30 +9,26 @@ public class ChatMessage implements Serializable {
     private final String messageID;
     private final String senderID;
     private final String content;
-    private final long timestamp;
     private final Set<String> seenBy;
     
     public ChatMessage(String senderID, String content) {
         this.messageID = UUID.randomUUID().toString();
         this.senderID = senderID;
         this.content = content;
-        this.timestamp = System.currentTimeMillis();
-        this.seenBy = ConcurrentHashMap.newKeySet();
-        this.seenBy.add(senderID); // Sender has seen it
+        this.seenBy = new HashSet<>();
+        this.seenBy.add(senderID);
     }
     
     // Getters
-    public String getMessageID() { return messageID; }
     public String getSenderID() { return senderID; }
     public String getContent() { return content; }
-    public long getTimestamp() { return timestamp; }
     
-    // Mark as seen by a peer
+    // Mark as seen
     public void markSeenBy(String peerID) {
         seenBy.add(peerID);
     }
     
-    // Check if a peer has seen this message
+    // Check if seen
     public boolean isSeenBy(String peerID) {
         return seenBy.contains(peerID);
     }
